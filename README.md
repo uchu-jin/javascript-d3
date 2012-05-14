@@ -1,4 +1,0 @@
-js
-==
-
-for study javascript
