@@ -1,0 +1,78 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+        <script type="text/javascript" src="http://mbostock.github.com/d3/d3.js"></script>
+        <script src="d3/d3.csv.js"></script>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1">
+	
+		<title>Data visualisation demo</title>
+
+
+<style>
+			
+    
+    </style>
+		
+	</head>
+	<body>
+		<script type="text/javascript">
+            
+            var svg = d3.select("body"),
+            WIDTH = 600,
+            HEIGHT = 600,
+            MARGINS = {top: 20, right: 20, bottom: 20, left: 30},
+            xRange = d3.scale.linear().range ([MARGINS.left, WIDTH - MARGINS.right]).domain([0, 300]),
+            yRange = d3.scale.linear().range ([HEIGHT - MARGINS.top, MARGINS.bottom]).domain([0, 300]),
+            xAxis = d3.svg.axis().scale(xRange).tickSize(5).tickSubdivide(true),
+            yAxis = d3.svg.axis().scale(yRange).tickSize(5).orient("left").tickSubdivide(true),
+            drawingData;
+            
+           svg = d3.select("body")
+            .append("svg");
+            
+            d3.csv("rel3main.csv", function (data) { update (data);});
+            
+            
+            function update (drawingData) {
+               
+                
+                xRange.domain([
+                               d3.min (drawingData, function(d) { return +d['Lat']; }),
+                               d3.max (drawingData, function(d) { return +d['Lat']; })
+                               ]);
+                
+                yRange.domain([
+                               d3.min (drawingData, function(d) { return +d['Lon']; }),
+                               d3.max (drawingData, function(d) { return +d['Lon']; })
+                               ]);
+                
+                //circle
+                svg.selectAll("circle")
+                .data(drawingData)
+                .enter()
+                .append("circle")
+				.attr("cx", function (d) { return xRange (+d['Lat']*5); })
+				.attr("cy", function (d) { return yRange (+d['Lon']); })
+                .attr("r", function (d) { return d['D']/7; })
+				.style("fill", function(d) { return "rgb(10, 50,100)";});
+                
+                
+                //text
+                svg.selectAll("text")
+                .data(drawingData)
+                .enter()
+                .append("text")
+                .text(function(d) { return d['Name'];})
+                .attr("x", function(d) { return xRange (+d['Lat']*5);})
+                .attr("y", function(d) { return yRange (+d['Lon']);})
+                .attr("font-family", "sans-serif")
+                .attr("font-size", function (d) { return d['D']/7; })
+                //.attr("font-size", "10px")
+                .attr("fill", "black");
+
+			}
+            </script>
+    
+    </body>
+</html>
